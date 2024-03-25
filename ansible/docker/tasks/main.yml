@@ -1,0 +1,36 @@
+---
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add repository into sources list
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+    filename: docker
+
+- name: Install Docker-ce
+  ansible.builtin.apt:
+    name: docker-ce 
+    state: latest
+    update_cache: true
+
+- name: Setup docker user
+  ansible.builtin.user:
+    name: docker
+    groups: docker,sudo
+    append: true
+
+- name: Install docker и docker-compose
+  ansible.builtin.pip:
+    name: 
+      - docker>=4.0,<5.0
+      - docker-compose>=1.27.0,<2.0
+    state: present
+
+- name: Restart Docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+    enabled: true

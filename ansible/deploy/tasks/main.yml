@@ -1,0 +1,12 @@
+---
+- name: Git clone repository
+  git:
+    repo: https://github.com/zZeleZz/test_devops_docker
+    dest: /opt/test
+
+- name: Docker start app
+  community.docker.docker_compose:
+        project_src: /opt/test
+        state: present
+        build: yes
+        restarted: yes
